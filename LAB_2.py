@@ -1,8 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from mplot3d_dragger import Dragger3D
-
 x = np.arange(0, 10, 0.1)
 y = np.arange(0, 10, 0.1)
 y1 = x ** 3 + x * np.sqrt(x) - x ** 2 - x
@@ -38,35 +35,32 @@ plt.grid()
 eps = 0.001
 kmax = 50
 X_new = 0
-X = np.array([2, 2])
-D = 0
-F= 0
-J = 0
+X = np.array([2.0, 2.0])
+D = 0.0
+F = np.array([0, 0])
+J = 0.0
 def fun1(X):
     global F,J
     n = np.size(X)
     F = np.zeros(n)
     J = np.zeros((n,n))
-    F[0] = X[0] ** 3 + X[0] * np.sqrt(X[0]) - X[0] ** 2 - X[0]
+    F[0] = (X[0] ** 3) + (X[0] * np.sqrt(X[0])) - (X[0] ** 2) - X[0]
     F[1] = np.cos(X[0] / 2) - X[0] + 5
-    J[0,0] = 3 * X[0] ** 2 - 2 * X[0] + (3 * np.sqrt(X[0])) / 2 - 1
+    J[0, 0] = 3 * X[0] ** 2 - 2 * X[0] + (3 * np.sqrt(X[0])) / 2 - 1
     J[0, 1] = 1
-    J[1,0] = -np.sin(x[0] / 2) / 2 - 1
+    J[1, 0] = -np.sin(x[0] / 2) / 2 - 1
     J[1, 1] = 1
     return F, J
 
 
 def fun2(X, F, J):
     D = -1 * (J / F)
-    X_new = X[0] + D
-    return X_new, D
-
-
+    Xnew = X[0] + D
+    return Xnew, D
 k = 1
 fun1(X)
 fun2(X, F, J)
-
-while np.max(np.abs(D)) and (k < kmax):
+while np.abs(np.abs(D)) < eps and (k < kmax):
     X = X_new
     fun1(X)
     fun2(X, F, J)
