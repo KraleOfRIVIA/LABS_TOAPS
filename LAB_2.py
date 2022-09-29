@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+
 x = np.arange(0, 10, 0.1)
 y = np.arange(0, 10, 0.1)
 y1 = x ** 3 + x * np.sqrt(x) - x ** 2 - x
@@ -35,36 +36,43 @@ plt.grid()
 eps = 0.001
 kmax = 50
 X_new = 0
-X = np.array([2.0, 2.0])
 D = 0.0
-F = np.array([0, 0])
-J = 0.0
-def fun1(X):
+X_STAR = np.array([2.0, 2.0], dtype=float)
+# n = np.size(X1)
+# F = np.array([0.0, 0.0])
+# J = np.zeros((n, n), dtype=float)
+F = 0
+J = 0
+def fun1(X_STAR):
     global F,J
-    n = np.size(X)
-    F = np.zeros(n)
-    J = np.zeros((n,n))
-    F[0] = (X[0] ** 3) + (X[0] * np.sqrt(X[0])) - (X[0] ** 2) - X[0]
-    F[1] = np.cos(X[0] / 2) - X[0] + 5
-    J[0, 0] = 3 * X[0] ** 2 - 2 * X[0] + (3 * np.sqrt(X[0])) / 2 - 1
+    n = np.size(X_STAR)
+    F = np.array([0,0])
+    J = np.zeros((n, n), dtype=float)
+    F[0] = (X_STAR[0] ** 3) + (X_STAR[0] * np.sqrt(X_STAR[0])) - (X_STAR[0] ** 2) - X_STAR[1]
+    F[1] = np.cos(X_STAR[0] / 2) - X_STAR[1] + 5
+    J[0, 0] = 3 * X_STAR[0] ** 2 - 2 * X_STAR[0] + (3 * np.sqrt(X_STAR[0])) / 2 - 1
     J[0, 1] = 1
-    J[1, 0] = -np.sin(x[0] / 2) / 2 - 1
+    J[1, 0] = -np.sin(X_STAR[0] / 2) / 2 - 1
     J[1, 1] = 1
     return F, J
 
+def fun2(X_STAR,F,J):
+    J = J.T
+    D = -1 *(J/F)
+    X_new = X_STAR[0] + D
+    return X_new, D
 
-def fun2(X, F, J):
-    D = -1 * (J / F)
-    Xnew = X[0] + D
-    return Xnew, D
+
 k = 1
-fun1(X)
-fun2(X, F, J)
-while np.abs(np.abs(D)) < eps and (k < kmax):
-    X = X_new
-    fun1(X)
-    fun2(X, F, J)
+fun1(X_STAR)
+fun2(X_STAR,F,J)
+print(D)
+while (np.max(np.abs(D)) > eps) and (k < kmax):
+    X_STAR = X_new
+    fun1(X_STAR)
+    fun2(X_STAR,F,J)
     k = k + 1
+    print(D)
     print(X_new)
 print("Root:")
 print(X_new)
