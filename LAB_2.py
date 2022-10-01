@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy.linalg import inv
 
 x = np.arange(0, 10, 0.1)
 y = np.arange(0, 10, 0.1)
@@ -33,49 +34,53 @@ ax3.set_xlabel('X1')
 ax3.set_ylabel('X2')
 ax3.contour(X1, X2, F2, H)
 plt.grid()
-eps = 0.001
+eps = 1e-3
 kmax = 50
-X_new = 0
-D = 0.0
-X_STAR = np.array([2.0, 2.0], dtype=float)
+X_new = np.array([0,0],dtype=float)
+D = np.array([0, 0])
+X_STAR = np.array([1.9, 1.9],dtype=float)
 # n = np.size(X1)
 # F = np.array([0.0, 0.0])
 # J = np.zeros((n, n), dtype=float)
 F = 0
 J = 0
+
+
 def fun1(X_STAR):
-    global F,J
+    global F, J
     n = np.size(X_STAR)
-    F = np.array([0,0])
-    J = np.zeros((n, n), dtype=float)
+    F = np.array([0, 0],dtype=float)
+    J = np.zeros((n, n))
     F[0] = (X_STAR[0] ** 3) + (X_STAR[0] * np.sqrt(X_STAR[0])) - (X_STAR[0] ** 2) - X_STAR[1]
     F[1] = np.cos(X_STAR[0] / 2) - X_STAR[1] + 5
     J[0, 0] = 3 * X_STAR[0] ** 2 - 2 * X_STAR[0] + (3 * np.sqrt(X_STAR[0])) / 2 - 1
-    J[0, 1] = 1
+    J[0, 1] = -1
     J[1, 0] = -np.sin(X_STAR[0] / 2) / 2 - 1
-    J[1, 1] = 1
+    J[1, 1] = -1
     return F, J
 
-def fun2(X_STAR,F,J):
-    J = J.T
-    D = -1 *(J/F)
-    X_new = X_STAR[0] + D
+
+def fun2(X_STAR, F, J):
+    global X_new, D
+    J1 = inv(J)
+    D = np.dot(J1, F)
+    X_new = X_STAR - D
     return X_new, D
 
 
 k = 1
 fun1(X_STAR)
-fun2(X_STAR,F,J)
-print(D)
-while (np.max(np.abs(D)) > eps) and (k < kmax):
+fun2(X_STAR, F, J)
+# print(D)
+while (np.sum(np.abs(D)) > eps) and (k < kmax):
     X_STAR = X_new
     fun1(X_STAR)
-    fun2(X_STAR,F,J)
+    fun2(X_STAR, F, J)
     k = k + 1
-    print(D)
+    # print(D)
     print(X_new)
-print("Root:")
-print(X_new)
-print("Number of iterations:")
-print(k)
+    print("Root:")
+    print(X_new)
+    print("Number of iterations:")
+    print(k)
 plt.show()
