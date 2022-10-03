@@ -1,17 +1,22 @@
+import mplcyberpunk
+# import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.linalg import inv
-
+plt.style.use("cyberpunk")
 x = np.arange(0, 10, 0.1)
 y = np.arange(0, 10, 0.1)
 y1 = x ** 3 + x * np.sqrt(x) - x ** 2 - x
 y2 = np.cos(x / 2) - x + 5
 fig, ax = plt.subplots()
-ax.plot(x, y1, 'b', x, y2, 'r')
+ax.plot(x, y1,'g', x, y2, 'y')
 ax.set_title("График зависимости х2 = у(х1)")
 ax.set_xlabel("$x1$")
 ax.set_ylabel("$x2$")
-plt.grid()
+ax.legend(['y1 = x ** 3 + x * np.sqrt(x) - x ** 2 - x', 'y2 = np.cos(x / 2) - x + 5'])
+mplcyberpunk.make_lines_glow(ax,2)
+mplcyberpunk.add_gradient_fill(ax,gradient_start='zero')
+mplcyberpunk.add_glow_effects()
 X_min = 0
 X_step = 0.5
 X_max = 5
@@ -20,12 +25,12 @@ F1 = (X1 ** 3) + (X1 * np.sqrt(X1)) - (X1 ** 2) - X2
 F2 = np.cos(X1 / 2) - X2 + 5
 Z = np.zeros((100, 10))
 fig2 = plt.figure()
-# ax2 = Axes3D(fig2)
-# dr = Dragger3D(ax2)
 ax2 = fig2.add_subplot(projection='3d')
 ax2.plot_surface(X1, X2, F1)
 ax2.plot_surface(X1, X2, F2)
 ax2.plot_surface(X1, X2, Z)
+mplcyberpunk.make_lines_glow(ax2,1)
+mplcyberpunk.add_glow_effects()
 fig3 = plt.figure()
 ax3 = fig3.add_subplot()
 H = np.arange(0, 5, 0.5)
@@ -33,7 +38,7 @@ ax3.contour(X1, X2, F1, H)
 ax3.set_xlabel('X1')
 ax3.set_ylabel('X2')
 ax3.contour(X1, X2, F2, H)
-plt.grid()
+mplcyberpunk.add_glow_effects()
 eps = 1e-3
 kmax = 50
 X_new = np.array([0,0],dtype=float)
