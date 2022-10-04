@@ -43,7 +43,8 @@ eps = 1e-3
 kmax = 50
 X_new = np.array([0,0],dtype=float)
 D = np.array([0, 0])
-X_STAR = np.array([1.9, 1.9],dtype=float)
+X_START = np.array([2, 4.5], dtype=float)
+X_pre = X_START
 # n = np.size(X1)
 # F = np.array([0.0, 0.0])
 # J = np.zeros((n, n), dtype=float)
@@ -51,39 +52,51 @@ F = 0
 J = 0
 
 
-def fun1(X_STAR):
+def Newton(X_START):
     global F, J
-    n = np.size(X_STAR)
+    n = np.size(X_START)
     F = np.array([0, 0],dtype=float)
     J = np.zeros((n, n))
-    F[0] = (X_STAR[0] ** 3) + (X_STAR[0] * np.sqrt(X_STAR[0])) - (X_STAR[0] ** 2) - X_STAR[1]
-    F[1] = np.cos(X_STAR[0] / 2) - X_STAR[1] + 5
-    J[0, 0] = 3 * X_STAR[0] ** 2 - 2 * X_STAR[0] + (3 * np.sqrt(X_STAR[0])) / 2 - 1
+    F[0] = (X_START[0] ** 3) + (X_START[0] * np.sqrt(X_START[0])) - (X_START[0] ** 2) - X_START[1]
+    F[1] = np.cos(X_START[0] / 2) - X_START[1] + 5
+    J[0, 0] = 3 * X_START[0] ** 2 - 2 * X_START[0] + (3 * np.sqrt(X_START[0])) / 2 - 1
     J[0, 1] = -1
-    J[1, 0] = -np.sin(X_STAR[0] / 2) / 2 - 1
+    J[1, 0] = -np.sin(X_START[0] / 2) / 2 - 1
     J[1, 1] = -1
     return F, J
 
+def interation(X_START):
+    global F, J,X_pre
+    n = np.size(X_START)
+    F = np.array([0, 0],dtype=float)
+    J = np.zeros((n, n),dtype=float)
+    F[0] = (X_pre[0] ** 3) + (X_pre[0] * np.sqrt(X_pre[0])) - (X_pre[0] ** 2) - X_pre[1]
+    F[1] = np.cos(X_pre[0] / 2) - X_pre[1] + 5
+    J[0, 0] = 3 * X_START[0] ** 2 - 2 * X_START[0] + (3 * np.sqrt(X_START[0])) / 2 - 1
+    J[0, 1] = -1
+    J[1, 0] = -np.sin(X_START[0] / 2) / 2 - 1
+    J[1, 1] = -1
+    return F, J
 
-def fun2(X_STAR, F, J):
+def fun2(X_pre, F, J):
     global X_new, D
     J1 = inv(J)
     D = np.dot(J1, F)
-    X_new = X_STAR - D
+    X_new = X_pre - D
     return X_new, D
 
 
 k = 1
-fun1(X_STAR)
-fun2(X_STAR, F, J)
+interation(X_START)
+fun2(X_START, F, J)
 # print(D)
 while (np.sum(np.abs(D)) > eps) and (k < kmax):
-    X_STAR = X_new
-    fun1(X_STAR)
-    fun2(X_STAR, F, J)
+    X_pre = X_new
+    interation(X_pre)
+    fun2(X_pre, F, J)
     k = k + 1
     # print(D)
-    print(X_new)
+    # print(X_new)
     print("Root:")
     print(X_new)
     print("Number of iterations:")
