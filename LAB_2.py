@@ -1,5 +1,4 @@
 import mplcyberpunk
-# import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.linalg import inv
@@ -43,11 +42,8 @@ eps = 1e-3
 kmax = 50
 X_new = np.array([0,0],dtype=float)
 D = np.array([0, 0])
-X_START = np.array([2, 4.5], dtype=float)
+X_START = np.array([2, 2], dtype=float)
 X_pre = X_START
-# n = np.size(X1)
-# F = np.array([0.0, 0.0])
-# J = np.zeros((n, n), dtype=float)
 F = 0
 J = 0
 
@@ -61,7 +57,7 @@ def Newton(X_START):
     F[1] = np.cos(X_START[0] / 2) - X_START[1] + 5
     J[0, 0] = 3 * X_START[0] ** 2 - 2 * X_START[0] + (3 * np.sqrt(X_START[0])) / 2 - 1
     J[0, 1] = -1
-    J[1, 0] = -np.sin(X_START[0] / 2) / 2 - 1
+    J[1, 0] = -np.sin(X_START[0] / 2) / 2
     J[1, 1] = -1
     return F, J
 
@@ -74,7 +70,7 @@ def interation(X_START):
     F[1] = np.cos(X_pre[0] / 2) - X_pre[1] + 5
     J[0, 0] = 3 * X_START[0] ** 2 - 2 * X_START[0] + (3 * np.sqrt(X_START[0])) / 2 - 1
     J[0, 1] = -1
-    J[1, 0] = -np.sin(X_START[0] / 2) / 2 - 1
+    J[1, 0] = -np.sin(X_START[0] / 2) / 2
     J[1, 1] = -1
     return F, J
 
@@ -87,16 +83,13 @@ def fun2(X_pre, F, J):
 
 
 k = 1
-interation(X_START)
+Newton(X_START)
 fun2(X_START, F, J)
-# print(D)
 while (np.sum(np.abs(D)) > eps) and (k < kmax):
     X_pre = X_new
-    interation(X_pre)
+    Newton(X_pre)
     fun2(X_pre, F, J)
     k = k + 1
-    # print(D)
-    # print(X_new)
     print("Root:")
     print(X_new)
     print("Number of iterations:")
