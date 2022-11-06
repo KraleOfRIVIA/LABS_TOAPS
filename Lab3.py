@@ -51,8 +51,8 @@ def reverse(matrix):
 
 # GaussStraightFunc(A)
 # print(A)
-A = np.array([[3.6, -1.9, -1.4], [1.9, 3.2, -0.5], [0.51, 0.3, -0.3]],dtype=float)
-B = np.array([1.1, 1.2, 5.2],dtype=float)
+A = np.array([[160, 1, -4], [8, 320, 2], [4, -4, 480]],dtype=float)
+B = np.array([1618, 5121, -480],dtype=float)
 
 
 def itera1():
