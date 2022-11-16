@@ -74,7 +74,7 @@ itera1()
 X = B
 X1 = np.dot(A, X) + B
 kmax = 100
-# A1 = np.column_stack([A, B])
+A1 = np.column_stack([A, B])
 D = ((np.max(np.abs(X1 - X))) > eps)
 while (D > eps) and (k < kmax):
     X = X1
