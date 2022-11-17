@@ -31,16 +31,13 @@ def interval(x, x1):
     for i in range(0, n1):
         if (x1[i] < x[0]):
             irt[i] = 0
-            continue
-        if (x1[i] > x[n]):
-            irt[i] = n
-        j = 1
-        while (j <= n - 1):
-            if(x1[i]<x[i]):
+        if (x1[i]>x[0]):
+            j = 1
+            while (x1[i]>x[j]):
                 j+=1
-            else:
-                irt[i] = j
-                break
+                if j == n:
+                    break
+            irt[i] = j
 
     return irt
 
@@ -85,6 +82,11 @@ def square_val(x, y, x1, irt):
     global cord_x_and_y
     n = np.size(x)
     n1 = np. size(x1)
+    k = np.abs(n - n1)
+    if n < n1:
+        n+=k
+    else:
+        n1+=k
     a = np.zeros(n1)
     b = np.zeros(n1)
     c = np.zeros(n1)
@@ -94,22 +96,21 @@ def square_val(x, y, x1, irt):
     while (i <= (n - 3)):
         x_new = np.array([[x[i] ** 2, x[i], 1], [x[i + 1] ** 2, x[i + 1], 1], [x[i + 2] ** 2, x[i + 2], 1]],dtype=float)
         y_new = np.array([y[i], y[i + 1], y[i + 2]])
-        M = np.column_stack([x_new, y_new])
-        C = GaussStraightFunc(M)
+        M = np.linalg.solve(x_new, y_new)
         # print(C[1])
-        a[i] = C[0][3]
-        b[i] = C[1][3]
-        c[i] = C[2][3]
+        a[i] = M[0]
+        b[i] = M[1]
+        c[i] = M[2]
         i += 1
-    a[n - 3] = a[n - 4]
-    b[n - 3] = b[n - 4]
-    c[n - 3] = c[n - 4]
+    a[n - 1] = a[n - 2]
+    b[n - 1] = b[n - 2]
+    c[n - 1] = c[n - 2]
     i = 0
     for i in range(0,n1-2):
         j = irt[i]
-        if ((j == -1) or (j == n)):
+        if ((j == 0) or (j == n)):
             y1[i] = -1
-        if ((j >= 0) and (j < n)):
+        if ((j > 0) and (j < n)):
             y1[i] = (a[j] * (x1[i]) ** 2 + b[j] * x1[i] + c[j])
     return y1
 
@@ -123,12 +124,12 @@ y1 = square_val(x, y, x1, irt)
 # print(y1)
 a = min(x)
 b = max(x)
-x2 = np.arange(a,b,1)
+x2 = np.arange(a,b,1.5)
 itr = interval(x,x2)
 itr = itr.astype(np.int64)
 itr = np.hstack(itr)
 y2 = square_val(x,y,x2,itr)
-ax.plot(x1,y1)
+ax.plot(y2)
 plt.grid()
 plt.show()
 
