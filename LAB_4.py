@@ -1,117 +1,77 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from math import nan
+import itertools
 fig, ax = plt.subplots()
-x = np.array([-8, -6, -3.5, -3, -2.5, 0, 2, 2.5, 4, 6.5])
-y = np.array([-1, 3, 6.5, 4, 2, 4, 4.5, 1, -2, 1])
-x1 = np.array([-10, -9, -5, -1, 1.5, 3, 5, 9])
-X = [-9.5, -6.5, -4, -2.5, -0.5, 1.5, 3, 4.5, 9.5]
-Y = [5.5, 1, -4.5, -2, -5, -2.5, 0, 1.5, -1.5]
-X1 = [-8, -5, -3, -1.5, 0.5, 4, 8]
-k = np.interp(x1, x, y, period=360)
-# print(k)
-A1 = np.column_stack([X, Y])
+# x=[-9, -7, -4, -2.5, -1.5 ,1, 2.5, 3.5, 5, 5.5]
+# y=[-5 ,-2.75, -2 ,-2.5, -3, -4.5, -4, -2.75, 2.5, 8]
+# x1=[-8, -5, -0.5, 3 ,4, 4.5, 5.25]
+x = [-9.5, -6.5, -4, -2.5, -0.5, 1.5, 3, 4.5, 9.5]
+y = [5.5, 1, -4.5, -2, -5, -2.5, 0, 1.5, -1.5]
+x1 = [-8, -5, -3, -1.5, 0.5, 4, 8]
+m = np.size(x) - np.size(x1)
 cord_x_and_y = np.column_stack([x, y])
 sort = np.argsort(cord_x_and_y[:, 0])
 cord_x_and_y = cord_x_and_y[sort]
-X1.sort()
+x1.sort()
 [x, y] = np.hsplit(cord_x_and_y, 2)
 x = np.hstack(x)
 y = np.hstack(y)
-# ax.plot(x1, k)
-# print(cord_x_and_y)
-# print("\n")
-# plt.show()
-N = 10
-
-
-def interval(x, x1):
+def interval(x,x1):
+    global m
+    k = np.size(x) - m
     n = np.size(x) - 1
     n1 = np.size(x1)
     irt = np.zeros((n1))
     for i in range(0, n1):
         if (x1[i] < x[0]):
-            irt[i] = 0
-        if (x1[i]>x[0]):
+            irt[i] = -1
+        if (x1[i]>x[0]and x1[i]<x[-1]):
             j = 1
             while (x1[i]>x[j]):
                 j+=1
                 if j == n:
+
                     break
-            irt[i] = j
+                if j == k:
+                    j = k
+                    break
+            irt[i] = j - 1
+
 
     return irt
 
 
-def GaussStraightFunc(matrix):
-    for nrow in range(len(matrix)):
-        # pivot равен номеру столбца
-        # nrow равен номеру строки
-        # np.argmax возвращает номер строки с максимальным элементом в уменьшенной матрице
-        # которая начинается со строки nrow. Поэтому нужно прибавить nrow к результату
-        pivot = nrow + np.argmax(abs(matrix[nrow:, nrow]))
-        if pivot != nrow:
-            # swap
-            matrix[[nrow, pivot]] = matrix[[pivot, nrow]]
-        row = matrix[nrow]
-        divider = row[nrow]  # диагональный элемент
-        if abs(divider) < 1e-10:
-            # почти ноль на диагонали
-            raise ValueError("Решений нет")
-        # делим на диагональный элемент.
-        row /= divider
-        # теперь надо вычесть приведённую строку из всех нижележащих строчек
-        for lower_row in matrix[nrow + 1:]:
-            factor = lower_row[nrow]  # элемент строки в колонке nrow
-            lower_row -= factor * row  # вычитаем, чтобы получить ноль в колонке nrow
-    # приводим к диагональному виду
-    reverse(matrix)
-    return matrix
-
-
-def reverse(matrix):
-    # перебор строк в обратном порядке
-    for nrow in range(len(matrix) - 1, 0, -1):
-        row = matrix[nrow]
-        for upper_row in matrix[:nrow]:
-            factor = upper_row[nrow]
-            upper_row -= factor * row
-    return matrix
-
-
-def square_val(x, y, x1, irt):
-    global cord_x_and_y
-    n = np.size(x)
-    n1 = np. size(x1)
-    k = np.abs(n - n1)
-    if n < n1:
-        n+=k
-    else:
-        n1+=k
-    a = np.zeros(n1)
-    b = np.zeros(n1)
-    c = np.zeros(n1)
+def square_val(x,y,x1,itr):
+    n = np.size(x) - 2
+    n1 = np.size(x1)
+    a = np.zeros(n)
+    b = np.zeros(n)
+    c = np.zeros(n)
     y1 = np.zeros(n1)
-    # print(y1[3])
     i = 0
-    while (i <= (n - 3)):
-        x_new = np.array([[x[i] ** 2, x[i], 1], [x[i + 1] ** 2, x[i + 1], 1], [x[i + 2] ** 2, x[i + 2], 1]],dtype=float)
-        y_new = np.array([y[i], y[i + 1], y[i + 2]])
-        M = np.linalg.solve(x_new, y_new)
-        # print(C[1])
-        a[i] = M[0]
-        b[i] = M[1]
-        c[i] = M[2]
+    while i<=n-2:
+        x_new = [[x[i]**2,x[i],1],[x[i+1]**2,x[i+1],1],[x[i+2]**2,x[i+2],1]]
+        y_new = [y[i],y[i+1],y[i+2]]
+        C = np.linalg.solve(x_new,y_new)
+        a[i] = C[0]
+        b[i] = C[1]
+        c[i] = C[2]
         i += 1
-    a[n - 1] = a[n - 2]
-    b[n - 1] = b[n - 2]
-    c[n - 1] = c[n - 2]
+    a[n-1] = a[n-2]
+    b[n-1] = b[n-2]
+    c[n-1] = c[n-2]
     i = 0
-    for i in range(0,n1-2):
-        j = irt[i]
-        if ((j == 0) or (j == n)):
-            y1[i] = -1
-        if ((j > 0) and (j < n)):
-            y1[i] = (a[j] * (x1[i]) ** 2 + b[j] * x1[i] + c[j])
+    while i <= n1 - 1:
+        j = itr[i]
+        if (j == -1):
+            y1[i] = nan
+            i+=1
+            continue
+        if ((j>-1) and (j<n)):
+            y1[i] = a[j]*x1[i]**2 + b[j]*x1[i]+c[j]
+            i+=1
+            continue
     return y1
 
 
@@ -119,18 +79,22 @@ irt = interval(x, x1)
 irt = irt.astype(np.int64)
 irt = np.hstack(irt)
 y1 = square_val(x, y, x1, irt)
-# print(x1)
-# print("\n")
-# print(y1)
+print("в расчете\n")
+print(x1)
+print("\n")
+print(y1)
 a = min(x)
 b = max(x)
-x2 = np.arange(a,b,1.5)
+x2 = np.arange(a,b,1)
 itr = interval(x,x2)
 itr = itr.astype(np.int64)
 itr = np.hstack(itr)
 y2 = square_val(x,y,x2,itr)
-ax.plot(y2)
+# plt.plot(x,y)
+ax.plot(x,y,'ro',x1,y1,'go',x2,y2)
+ax.set_title("Кусочно - квадратичная интерполяция")
+ax.legend(['Эксперементальные точки', 'Точки вычисления'])
+ax.set_xlabel("$x$")
+ax.set_ylabel("$y$")
 plt.grid()
 plt.show()
-
-    # доделать . спросить
