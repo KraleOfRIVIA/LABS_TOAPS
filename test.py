@@ -5,21 +5,8 @@ import pandas as pan
 fig, ax = plt.subplots()
 x = np.arange(-pi,pi+1,pi/2)
 y = np.cos(x)
-plt.plot(x,y)
-# x=[-8, -6 ,-3.5, -3, -2.5, 0, 2, 2.5, 4, 6.5]
-# y=[-1 ,3 ,6.5 ,4 ,2 ,4 ,4.5, 1, -2, 1]
-# x1=[-10 ,-9 ,-5 ,-1, 1.5, 3, 5, 9]
-# x = [-9.5, -6.5, -4, -2.5, -0.5, 1.5, 3, 4.5, 9.5]
-# y = [5.5, 1, -4.5, -2, -5, -2.5, 0, 1.5, -1.5]
-# x1 = [-8, -5, -3, -1.5, 0.5, 4, 8]
+x1 = np.arange(np.min(x),np.max(x),0.1)
 m = np.size(x) - np.size(x1)
-cord_x_and_y = np.column_stack([x, y])
-sort = np.argsort(cord_x_and_y[:, 0])
-cord_x_and_y = cord_x_and_y[sort]
-x1.sort()
-[x, y] = np.hsplit(cord_x_and_y, 2)
-x = np.hstack(x)
-y = np.hstack(y)
 def interval(x,x1):
     global m
     k = np.size(x) - m
@@ -89,7 +76,7 @@ itr = interval(x,x2)
 itr = itr.astype(np.int64)
 itr = np.hstack(itr)
 y2 = square_val(x,y,x2,itr)
-ax.plot(x,y,'ro',x1,y1,'go',x2,y2)
+ax.plot(x,y,'ro',x2,y2)
 ax.set_title("Кусочно - квадратичная интерполяция")
 ax.legend(['Эксперементальные точки', 'Точки вычисления'])
 ax.set_xlabel("$x$")
