@@ -16,12 +16,24 @@ x1.sort()
 [x, y] = np.hsplit(cord_x_and_y, 2)
 x = np.hstack(x)
 y = np.hstack(y)
-
-
+n = 5
+h[1:n] = x[2:n+1] - x[1:n]
+A[1] = 0
+A[2:n-1] = h[2:n-1]
+B[1:n-1] = 2*(h[1:n-1]+h[2:n])
+C[1:n-2] = h[2:n-1]
+C[n-1] = 0
+D = np.zeros((np.arange(1.,(n-1))))
 def progom(x, y):
     n = np.size(x) - 1
-
-
+    h[1:n] = x[2:n+1] - x[1:n]
+    A[1] = 0
+    A[2:n-1] = h[2:n-1]
+    B[1:n-1] = 2*(h[1:n-1]+h[2:n])
+    C[1:n-2] = h[2:n-1]
+    C[n-1] = 0
+    D = np.zeros((np.arange(1.,(n-1))))
+    print("хуй")
 def interval(x, x1):
     n = np.size(x)
     n1 = np.size(x1)
