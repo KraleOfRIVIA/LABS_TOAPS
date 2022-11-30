@@ -2,17 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pan
 
-
-def Eiler(x, h):
-    n = np.size(x)
-    y = np.zeros((n))
-    y[0] = 4
-    for i in range(0, len(x) - 1):
-        y[i + 1] = y[i]+h*((1 / (x[i] + 2)) + 2 * np.log(2 * x[i] + 4) + 2 * np.cos(2 * x[i]) - 2 * np.sin(2 * x[i]) - 2 * y[i])
-        i += 1
-    return y
-
-
 def progom(x, y):
     n = np.size(x) - 1
     h = np.arange(0, n, 1.0)
@@ -85,6 +74,17 @@ def spline_val(x, y, x1, itr, M):
                         x1[i] - x[n + 1])
             i += 1
     return y1
+
+def Eiler_Koshi(x,h):
+    n = np.size(x)
+    y = np.zeros((n))
+    y1 = np.zeros((n))
+    y[0] = 1
+    for i in range(0, len(x) - 1):
+        y[i + 1] = y[i]+h*((1 / (x[i] + 2)) + 2 * np.log(2 * x[i] + 4) + 2 * np.cos(2 * x[i]) - 2 * np.sin(2 * x[i]) - 2 * y[i])
+        i += 1
+
+
 
 
 h = 0.2
