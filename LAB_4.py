@@ -9,7 +9,6 @@ x1=[-10 ,-9 ,-5 ,-1, 1.5, 3, 5, 9]
 # x = [-9.5, -6.5, -4, -2.5, -0.5, 1.5, 3, 4.5, 9.5]
 # y = [5.5, 1, -4.5, -2, -5, -2.5, 0, 1.5, -1.5]
 # x1 = [-8, -5, -3, -1.5, 0.5, 4, 8]
-m = np.size(x) - np.size(x1)
 cord_x_and_y = np.column_stack([x, y])
 sort = np.argsort(cord_x_and_y[:, 0])
 cord_x_and_y = cord_x_and_y[sort]
@@ -20,7 +19,7 @@ y = np.hstack(y)
 def interval(x, x1):
     n = np.size(x)
     n1 = np.size(x1)
-    itr = np.zeros(n1)
+    itr = np.zeros(n1,dtype=int)
     j = 0
     for i in range(0, n1 - 1):
         if (x1[i] < x[0]):
@@ -71,8 +70,6 @@ def square_val(x,y,x1,itr):
     return y1
 
 irt = interval(x, x1)
-irt = irt.astype(np.int64)
-irt = np.hstack(irt)
 y1 = square_val(x, y, x1, irt)
 df = pan.DataFrame({"расчетные ":x1,'значения' :y1})
 print(df)
@@ -80,8 +77,6 @@ a = min(x)
 b = max(x)
 x2 = np.arange(a,b,0.01)
 itr = interval(x,x2)
-itr = itr.astype(np.int64)
-itr = np.hstack(itr)
 y2 = square_val(x,y,x2,itr)
 ax.plot(x,y,'ro',x1,y1,'go',x2,y2)
 ax.set_title("Кусочно - квадратичная интерполяция")

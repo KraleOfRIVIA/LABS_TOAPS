@@ -44,7 +44,7 @@ def progom(x, y):
 def interval(x, x1):
     n = np.size(x)
     n1 = np.size(x1)
-    itr = np.zeros(n1)
+    itr = np.zeros(n1,dtype=int)
     j = 0
     for i in range(0, n1 - 1):
         if (x1[i] < x[0]):
@@ -97,8 +97,6 @@ a = np.min(x)
 b = np.max(x)
 x2 = np.arange(a, b, h)
 itr = interval(x, x2)
-itr = itr.astype(np.int64)
-itr = np.hstack(itr)
 y2 = spline_val(x, y, x2, itr, M)
 fig, ax = plt.subplots()
 ax.plot(x, y, 'bo--', x2, y2)
