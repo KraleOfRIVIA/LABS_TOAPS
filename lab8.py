@@ -81,28 +81,27 @@ def Eiler_Koshi(x,h):
     y1 = np.zeros((n))
     x1 = np.zeros((n))
     y[0] = 1
-    for i in range(0, len(x) - 1):
-        y1[i+1] = y[i]+h*((1 / (x[i] + 2)) + 2 * np.log(2 * x[i] + 4) + 2 * np.cos(2 * x[i]) - 2 * np.sin(2 * x[i]) - 2 * y[i])
+    for i in range(0, len(x)-1):
+        y1[i+1] = y[i]+h*(y[i]-2*np.sin(x[i])-np.cos(x[i])*(1-2*np.sin(x[i])))
         x1[i] = x[i] +h
-        y[i + 1] = y[i]+h/2*(((1 / (x[i] + 2)) + 2 * np.log(2 * x[i] + 4) + 2 * np.cos(2 * x[i]) - 2 * np.sin(2 * x[i]) - 2 * y1[i])+((1 / (x1[i] + 2)) + 2 * np.log(2 * x1[i] + 4) + 2 * np.cos(2 * x1[i]) - 2 * np.sin(2 * x1[i]) - 2 * y1[i]))
-        i += 1
+        y[i + 1] = y[i]+h/2*((y[i]-2*np.sin(x[i])-np.cos(x[i])*(1-2*np.sin(x[i])))+(y1[i]-2*np.sin(x1[i])-np.cos(x1[i])*(1-2*np.sin(x1[i])))+h)
     return y
 
 
 
-h = 0.1
-x = np.arange(0, 2, h)
+h = 0.4
+x = np.arange(0, 4, h)
 y = Eiler_Koshi(x, h)
 df = pan.DataFrame({"расчетные ": x, 'значения': y})
 print(df)
 M = progom(x, y)
 a = np.min(x)
 b = np.max(x)
-x2 = np.arange(a, b, h)
+x2 = np.arange(a, b, 0.1*h)
 itr = interval(x, x2)
 y2 = spline_val(x, y, x2, itr, M)
 fig, ax = plt.subplots()
-ax.plot(x, y, 'bo--', x2, y2)
+ax.plot(x, y, 'ro', x2, y2)
 ax.set_xlabel("$x$")
 ax.set_ylabel("$y$")
 plt.grid()
