@@ -5,7 +5,7 @@ import pandas as pan
 
 def Eiler(x, h):
     n = np.size(x)
-    y = np.zeros((n))
+    y = np.zeros((n),dtype=float)
     y[0] = 4
     for i in range(0, len(x) - 1):
         y[i + 1] = y[i]+h*((1 / (x[i] + 2)) + 2 * np.log(2 * x[i] + 4) + 2 * np.cos(2 * x[i]) - 2 * np.sin(2 * x[i]) - 2 * y[i])

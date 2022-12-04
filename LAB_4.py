@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 from math import nan, pi
 import pandas as pan
 fig, ax = plt.subplots()
-x=[0, 5.5, 8.5, 10.5 ,12.5, 14, 15, 16.5 ,18]
-y=[5.5 ,7.5, 9.5, 11.5, 13, 12, 11, 12, 13]
-x1=[2, 7 ,11.5, 13, 17, 19, 21]
+x=[-8, -6 ,-3.5, -3, -2.5, 0, 2, 2.5, 4, 6.5]
+y=[-1 ,3 ,6.5 ,4 ,2 ,4 ,4.5, 1, -2, 1]
+x1=[-10 ,-9 ,-5 ,-1, 1.5, 3, 5, 9]
 # x = [-9.5, -6.5, -4, -2.5, -0.5, 1.5, 3, 4.5, 9.5]
 # y = [5.5, 1, -4.5, -2, -5, -2.5, 0, 1.5, -1.5]
 # x1 = [-8, -5, -3, -1.5, 0.5, 4, 8]
@@ -26,7 +26,7 @@ def interval(x, x1):
             itr[i] = -1
             continue
         if (x1[i] > x[n - 1]):
-            itr[i] = - 1
+            itr[i] = n - 1
         while (j <= n - 2):
             if (x1[i] >= x[j]) and (x1[i] <= x[j + 1]):
                 itr[i] = j
@@ -75,7 +75,7 @@ df = pan.DataFrame({"расчетные ":x1,'значения' :y1})
 print(df)
 a = min(x)
 b = max(x)
-x2 = np.arange(a,b,0.1)
+x2 = np.arange(a,b,0.01)
 itr = interval(x,x2)
 y2 = square_val(x,y,x2,itr)
 ax.plot(x,y,'ro',x1,y1,'go',x2,y2)
