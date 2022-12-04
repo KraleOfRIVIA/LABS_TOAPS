@@ -40,7 +40,7 @@ def interval(x, x1):
             itr[i] = -1
             continue
         if (x1[i] > x[n - 1]):
-            itr[i] = n - 1
+            itr[i] = - 1
         while (j <= n - 2):
             if (x1[i] >= x[j]) and (x1[i] <= x[j + 1]):
                 itr[i] = j
