@@ -2,12 +2,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math import nan
 import pandas as pan
-# x=[-8, -6 ,-3.5, -3, -2.5, 0, 2, 2.5, 4, 6.5]
-# y=[-1 ,3 ,6.5 ,4 ,2 ,4 ,4.5, 1, -2, 1]
-# x1=[-10 ,-9 ,-5 ,-1, 1.5, 3, 5, 9]
-x = [-9.5, -6.5, -4, -2.5, -0.5, 1.5, 3, 4.5, 9.5]
-y = [5.5, 1, -4.5, -2, -5, -2.5, 0, 1.5, -1.5]
-x1 = [-8, -5, -3, -1.5, 0.5, 4, 8]
+# x=[-9, -7, -4 ,-2.5 ,-1.5 ,1, 2.5, 3.5 ,5, 5.5]
+# y=[-5 ,-2.75, -2, -2.5, -3 ,-4.5, -4 ,-2.75, 2.5 ,8]
+# x1=[-8, -5, -0.5 ,2 ,3 ,4 ,4.5, 5.25]
+x=[-8, -6 ,-3.5, -3, -2.5, 0, 2, 2.5, 4, 6.5]
+y=[-1 ,3 ,6.5 ,4 ,2 ,4 ,4.5, 1, -2, 1]
+x1=[-10 ,-9 ,-5 ,-1, 1.5, 3, 5, 9]
+# x = [-9.5, -6.5, -4, -2.5, -0.5, 1.5, 3, 4.5, 9.5]
+# y = [5.5, 1, -4.5, -2, -5, -2.5, 0, 1.5, -1.5]
+# x1 = [-8, -5, -3, -1.5, 0.5, 4, 8]
 cord_x_and_y = np.column_stack([x, y])
 sort = np.argsort(cord_x_and_y[:, 0])
 cord_x_and_y = cord_x_and_y[sort]
@@ -46,13 +49,13 @@ def interval(x, x1):
     n = np.size(x)
     n1 = np.size(x1)
     itr = np.zeros(n1,dtype=int)
-    j = 0
     for i in range(0, n1 - 1):
         if (x1[i] < x[0]):
             itr[i] = -1
             continue
         if (x1[i] > x[n - 1]):
             itr[i] = - 1
+        j = 0
         while (j <= n - 2):
             if (x1[i] >= x[j]) and (x1[i] <= x[j + 1]):
                 itr[i] = j
@@ -75,10 +78,10 @@ def spline_val(x,y,x1,itr,M):
         if (j==-1):
             y1[i] = y[0]+((x[0]-x[1])*M[1]/6+(y[1]-y[0])/(x[1]-x[0]))*(x1[i]-x[0])
             i+=1
-        if (j>-1 and j<=n):
+        if (j>-1 and j<n):
             y1[i] = y1[i]=(1/(6*h[j]))*((M[j]*(x[j+1]- x1[i])**3)+M[j+1]*(x1[i]-x[j])**3)+(1/h[j])*((y[j]-((M[j]*h[j]**2)/6))*(x[j+1]-x1[i])+(y[j+1]-((M[j+1]*h[j]**2)/6))*(x1[i]-(x[j])))
             i+=1
-        if (j==n+1):
+        if (j==n):
             y1[i] = y1[i]=y[n+1]+((x[n+1]-x[n])*M[n]/6+(y[n+1]-y[n])/(x[n+1]-x[n]))*(x1[i]-x[n+1])
             i+=1
     return y1
@@ -87,11 +90,19 @@ itr = interval(x,x1)
 y1 = spline_val(x,y,x1,itr,M)
 df = pan.DataFrame({"расчетные ":x1,'значения' :y1})
 print(df)
-a = min(x)
-b = max(x)
-x2 = np.arange(a,b,0.01)
+if min(x) < min(x1):
+    a = min(x)
+else:
+    a = min(x1)
+if max(x) > max(x1):
+    b = max(x)
+else:
+    b = max(x1)
+x2 = np.arange(a,b+1,0.01)
 itr = interval(x,x2)
 y2 = spline_val(x,y,x2,itr,M)
+df = pan.DataFrame({"расчетные ":x2,'значения' :y2})
+print(df)
 fig, ax = plt.subplots()
 ax.plot(x,y,'ro',x1,y1,'go',x2,y2)
 ax.set_title("Кубический сплайн")

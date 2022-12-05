@@ -9,7 +9,6 @@ def Eiler(x, h):
     y[0] = 4
     for i in range(0, len(x) - 1):
         y[i + 1] = y[i]+h*((1 / (x[i] + 2)) + 2 * np.log(2 * x[i] + 4) + 2 * np.cos(2 * x[i]) - 2 * np.sin(2 * x[i]) - 2 * y[i])
-        i += 1
     return y
 
 
@@ -95,11 +94,11 @@ print(df)
 M = progom(x, y)
 a = np.min(x)
 b = np.max(x)
-x2 = np.arange(a, b, h)
+x2 = np.arange(a, b, 0.1*h)
 itr = interval(x, x2)
 y2 = spline_val(x, y, x2, itr, M)
 fig, ax = plt.subplots()
-ax.plot(x, y, 'bo--', x2, y2)
+ax.plot(x, y, 'ro', x2, y2)
 ax.set_xlabel("$x$")
 ax.set_ylabel("$y$")
 plt.grid()

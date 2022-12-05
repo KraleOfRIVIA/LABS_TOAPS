@@ -3,12 +3,16 @@ import matplotlib.pyplot as plt
 from math import nan, pi
 import pandas as pan
 fig, ax = plt.subplots()
+x = np.arange(-pi,pi+1,pi/2)
+y = np.cos(x)
+plt.plot(x,y)
 x=[-8, -6 ,-3.5, -3, -2.5, 0, 2, 2.5, 4, 6.5]
 y=[-1 ,3 ,6.5 ,4 ,2 ,4 ,4.5, 1, -2, 1]
 x1=[-10 ,-9 ,-5 ,-1, 1.5, 3, 5, 9]
 # x = [-9.5, -6.5, -4, -2.5, -0.5, 1.5, 3, 4.5, 9.5]
 # y = [5.5, 1, -4.5, -2, -5, -2.5, 0, 1.5, -1.5]
 # x1 = [-8, -5, -3, -1.5, 0.5, 4, 8]
+m = np.size(x) - np.size(x1)
 cord_x_and_y = np.column_stack([x, y])
 sort = np.argsort(cord_x_and_y[:, 0])
 cord_x_and_y = cord_x_and_y[sort]
@@ -16,26 +20,27 @@ x1.sort()
 [x, y] = np.hsplit(cord_x_and_y, 2)
 x = np.hstack(x)
 y = np.hstack(y)
-def interval(x, x1):
-    n = np.size(x)
+def interval(x,x1):
+    global m
+    k = np.size(x) - m
+    n = np.size(x) - 1
     n1 = np.size(x1)
-    itr = np.zeros(n1,dtype=int)
-    j = 0
-    for i in range(0, n1 - 1):
+    irt = np.zeros((n1))
+    for i in range(0, n1):
         if (x1[i] < x[0]):
-            itr[i] = -1
-            continue
-        if (x1[i] > x[n - 1]):
-            itr[i] = n - 1
-        while (j <= n - 2):
-            if (x1[i] >= x[j]) and (x1[i] <= x[j + 1]):
-                itr[i] = j
-                i += 1
-                break
-            else:
-                j += 1
-    itr[-1] = itr[-2]
-    return itr
+            irt[i] = -1
+        if (x1[i]>x[0]and x1[i]<x[-1]):
+            j = 1
+            while (x1[i]>x[j]):
+                j+=1
+                if j == n:
+
+                    break
+                if j == k:
+                    j = k
+                    break
+            irt[i] = j - 1
+    return irt
 
 def square_val(x,y,x1,itr):
     n = np.size(x) - 1
@@ -70,6 +75,8 @@ def square_val(x,y,x1,itr):
     return y1
 
 irt = interval(x, x1)
+irt = irt.astype(np.int64)
+irt = np.hstack(irt)
 y1 = square_val(x, y, x1, irt)
 df = pan.DataFrame({"расчетные ":x1,'значения' :y1})
 print(df)
@@ -77,6 +84,8 @@ a = min(x)
 b = max(x)
 x2 = np.arange(a,b,0.01)
 itr = interval(x,x2)
+itr = itr.astype(np.int64)
+itr = np.hstack(itr)
 y2 = square_val(x,y,x2,itr)
 ax.plot(x,y,'ro',x1,y1,'go',x2,y2)
 ax.set_title("Кусочно - квадратичная интерполяция")
