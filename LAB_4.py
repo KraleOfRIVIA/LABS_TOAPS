@@ -20,27 +20,26 @@ x1.sort()
 [x, y] = np.hsplit(cord_x_and_y, 2)
 x = np.hstack(x)
 y = np.hstack(y)
-def interval(x,x1):
-    global m
-    k = np.size(x) - m
-    n = np.size(x) - 1
+def interval(x, x1):
+    n = np.size(x)
     n1 = np.size(x1)
-    irt = np.zeros((n1))
-    for i in range(0, n1):
+    itr = np.zeros(n1,dtype=int)
+    for i in range(0, n1 - 1):
         if (x1[i] < x[0]):
-            irt[i] = -1
-        if (x1[i]>x[0]and x1[i]<x[-1]):
-            j = 1
-            while (x1[i]>x[j]):
-                j+=1
-                if j == n:
-
-                    break
-                if j == k:
-                    j = k
-                    break
-            irt[i] = j - 1
-    return irt
+            itr[i] = -1
+            continue
+        if (x1[i] > x[n - 1]):
+            itr[i] = - 1
+        j = 0
+        while (j <= n - 2):
+            if (x1[i] >= x[j]) and (x1[i] <= x[j + 1]):
+                itr[i] = j
+                i += 1
+                break
+            else:
+                j += 1
+    itr[-1] = itr[-2]
+    return itr
 
 def square_val(x,y,x1,itr):
     n = np.size(x) - 1

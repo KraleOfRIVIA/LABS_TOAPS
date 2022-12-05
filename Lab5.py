@@ -2,12 +2,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math import nan
 import pandas as pan
+x=[0.5, 3.5, 6.5, 8, 9.5, 11, 13.5, 16.5, 18.5]
+y=[2.5, 13, 10.5, 2, 1.5, 6, 9, 4.5, 3.5]
+x1=[1, 3, 7.5, 9, 12, 15 ,20]
 # x=[-9, -7, -4 ,-2.5 ,-1.5 ,1, 2.5, 3.5 ,5, 5.5]
 # y=[-5 ,-2.75, -2, -2.5, -3 ,-4.5, -4 ,-2.75, 2.5 ,8]
 # x1=[-8, -5, -0.5 ,2 ,3 ,4 ,4.5, 5.25]
-x=[-8, -6 ,-3.5, -3, -2.5, 0, 2, 2.5, 4, 6.5]
-y=[-1 ,3 ,6.5 ,4 ,2 ,4 ,4.5, 1, -2, 1]
-x1=[-10 ,-9 ,-5 ,-1, 1.5, 3, 5, 9]
+# x=[-8, -6 ,-3.5, -3, -2.5, 0, 2, 2.5, 4, 6.5]
+# y=[-1 ,3 ,6.5 ,4 ,2 ,4 ,4.5, 1, -2, 1]
+# x1=[-10 ,-9 ,-5 ,-1, 1.5, 3, 5, 9]
 # x = [-9.5, -6.5, -4, -2.5, -0.5, 1.5, 3, 4.5, 9.5]
 # y = [5.5, 1, -4.5, -2, -5, -2.5, 0, 1.5, -1.5]
 # x1 = [-8, -5, -3, -1.5, 0.5, 4, 8]
@@ -53,13 +56,12 @@ def interval(x, x1):
         if (x1[i] < x[0]):
             itr[i] = -1
             continue
-        if (x1[i] > x[n - 1]):
-            itr[i] = - 1
+        if (x1[i] > x[-1]):
+            itr[i] = n
         j = 0
         while (j <= n - 2):
             if (x1[i] >= x[j]) and (x1[i] <= x[j + 1]):
                 itr[i] = j
-                i += 1
                 break
             else:
                 j += 1
@@ -67,10 +69,10 @@ def interval(x, x1):
     return itr
 
 def spline_val(x,y,x1,itr,M):
-    n = np.size(x) - 1
+    n = np.size(x) -1
     n1 = np.size(x1)
     y1 = np.zeros((n1),dtype=float)
-    h = np.arange(1,n+1,1.0)
+    h = np.arange(0,n+1,1.0)
     h[0:n] = x[1:n+1] - x[0:n]
     i = 0
     while(i<=n1-1):
@@ -78,12 +80,15 @@ def spline_val(x,y,x1,itr,M):
         if (j==-1):
             y1[i] = y[0]+((x[0]-x[1])*M[1]/6+(y[1]-y[0])/(x[1]-x[0]))*(x1[i]-x[0])
             i+=1
-        if (j>-1 and j<n):
-            y1[i] = y1[i]=(1/(6*h[j]))*((M[j]*(x[j+1]- x1[i])**3)+M[j+1]*(x1[i]-x[j])**3)+(1/h[j])*((y[j]-((M[j]*h[j]**2)/6))*(x[j+1]-x1[i])+(y[j+1]-((M[j+1]*h[j]**2)/6))*(x1[i]-(x[j])))
+            # continue
+        if (j>-1 and j<=n):
+            y1[i] =1/((6*h[j]))*((M[j]*(x[j+1] - x1[i])**3)+M[j+1]*(x1[i]-x[j])**3)+(1/h[j])*((y[j]-((M[j]*h[j]**2)/6))*(x[j+1]-x1[i])+(y[j+1]-((M[j+1]*h[j]**2)/6))*(x1[i]-(x[j])))
             i+=1
-        if (j==n):
-            y1[i] = y1[i]=y[n+1]+((x[n+1]-x[n])*M[n]/6+(y[n+1]-y[n])/(x[n+1]-x[n]))*(x1[i]-x[n+1])
+            # continue
+        if (j>=n):
+            y1[i] = y[n]+((x[n]-x[n])*M[n]/6+(y[n]-y[n])/(x[n]-x[n]))*(x1[i]-x[n])
             i+=1
+            # continue
     return y1
 M = progom(x,y)
 itr = interval(x,x1)
@@ -98,7 +103,7 @@ if max(x) > max(x1):
     b = max(x)
 else:
     b = max(x1)
-x2 = np.arange(a,b+1,0.01)
+x2 = np.arange(a,b,0.01)
 itr = interval(x,x2)
 y2 = spline_val(x,y,x2,itr,M)
 df = pan.DataFrame({"расчетные ":x2,'значения' :y2})
