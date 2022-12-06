@@ -34,45 +34,44 @@ def interval(x, x1):
     n = np.size(x)
     n1 = np.size(x1)
     itr = np.zeros(n1,dtype=int)
-    j = 0
-    for i in range(0, n1 - 1):
+    for i in range(0, n1):
         if (x1[i] < x[0]):
             itr[i] = -1
             continue
-        if (x1[i] > x[n - 1]):
-            itr[i] = - 1
+        if (x1[i] > x[-1]):
+            itr[i] = n
+        j = 0
         while (j <= n - 2):
             if (x1[i] >= x[j]) and (x1[i] <= x[j + 1]):
                 itr[i] = j
-                i += 1
                 break
             else:
                 j += 1
-    itr[-1] = itr[-2]
+    # itr[-1] = itr[-2]
     return itr
 
 
-def spline_val(x, y, x1, itr, M):
-    n = np.size(x) - 1
+def spline_val(x,y,x1,itr,M):
+    n = np.size(x) -1
     n1 = np.size(x1)
-    y1 = np.zeros((n1), dtype=float)
-    h = np.arange(1, n + 1, 1.0)
-    h[0:n] = x[1:n + 1] - x[0:n]
+    y1 = np.zeros((n1),dtype=float)
+    h = np.arange(0,n+1,1.0)
+    h[0:n] = x[1:n+1] - x[0:n]
     i = 0
-    while (i <= n1 - 1):
+    while(i<=n1-1):
         j = itr[i]
-        if (j == -1):
-            y1[i] = y[0] + ((x[0] - x[1]) * M[1] / 6 + (y[1] - y[0]) / (x[1] - x[0])) * (x1[i] - x[0])
-            i += 1
-        if (j > -1 and j <= n):
-            y1[i] = y1[i] = (1 / (6 * h[j])) * ((M[j] * (x[j + 1] - x1[i]) ** 3) + M[j + 1] * (x1[i] - x[j]) ** 3) + (
-                        1 / h[j]) * ((y[j] - ((M[j] * h[j] ** 2) / 6)) * (x[j + 1] - x1[i]) + (
-                        y[j + 1] - ((M[j + 1] * h[j] ** 2) / 6)) * (x1[i] - (x[j])))
-            i += 1
-        if (j == n + 1):
-            y1[i] = y1[i] = y[n + 1] + ((x[n + 1] - x[n]) * M[n] / 6 + (y[n + 1] - y[n]) / (x[n + 1] - x[n])) * (
-                        x1[i] - x[n + 1])
-            i += 1
+        if (j==-1):
+            y1[i] = y[0]+((x[0]-x[1])*M[3]/6+(y[1]-y[0])/(x[1]-x[0]))*(x1[i]-x[0])
+            i+=1
+            # continue
+        if (j>-1 and j<=n):
+            y1[i] =1/((6*h[j]))*((M[j]*(x[j+1] - x1[i])**3)+M[j+1]*(x1[i]-x[j])**3)+(1/h[j])*((y[j]-((M[j]*h[j]**2)/6))*(x[j+1]-x1[i])+(y[j+1]-((M[j+1]*h[j]**2)/6))*(x1[i]-(x[j])))
+            i+=1
+            # continue
+        if (j>=n):
+            y1[i] = y[-1]+((x[-1]-x[-2])*M[n]/6+(y[-1]-y[-2])/(x[-1]-x[-2]))*(x1[i]-x[-1])
+            i+=1
+            # continue
     return y1
 
 def Eiler_Koshi(x,h):

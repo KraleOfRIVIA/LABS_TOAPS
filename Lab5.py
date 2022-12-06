@@ -2,18 +2,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math import nan
 import pandas as pan
-x=[0.5, 3.5, 6.5, 8, 9.5, 11, 13.5, 16.5, 18.5]
-y=[2.5, 13, 10.5, 2, 1.5, 6, 9, 4.5, 3.5]
-x1=[1, 3, 7.5, 9, 12, 15 ,20]
+# x=[0.5, 3.5, 6.5, 8, 9.5, 11, 13.5, 16.5, 18.5]
+# y=[2.5, 13, 10.5, 2, 1.5, 6, 9, 4.5, 3.5]
+# x1=[1, 3, 7.5, 9, 12, 15 ,20]
 # x=[-9, -7, -4 ,-2.5 ,-1.5 ,1, 2.5, 3.5 ,5, 5.5]
 # y=[-5 ,-2.75, -2, -2.5, -3 ,-4.5, -4 ,-2.75, 2.5 ,8]
 # x1=[-8, -5, -0.5 ,2 ,3 ,4 ,4.5, 5.25]
 # x=[-8, -6 ,-3.5, -3, -2.5, 0, 2, 2.5, 4, 6.5]
 # y=[-1 ,3 ,6.5 ,4 ,2 ,4 ,4.5, 1, -2, 1]
 # x1=[-10 ,-9 ,-5 ,-1, 1.5, 3, 5, 9]
-# x = [-9.5, -6.5, -4, -2.5, -0.5, 1.5, 3, 4.5, 9.5]
-# y = [5.5, 1, -4.5, -2, -5, -2.5, 0, 1.5, -1.5]
-# x1 = [-8, -5, -3, -1.5, 0.5, 4, 8]
+x = [-9.5, -6.5, -4, -2.5, -0.5, 1.5, 3, 4.5, 9.5]
+y = [5.5, 1, -4.5, -2, -5, -2.5, 0, 1.5, -1.5]
+x1 = [-8, -5, -3, -1.5, 0.5, 4, 8]
 cord_x_and_y = np.column_stack([x, y])
 sort = np.argsort(cord_x_and_y[:, 0])
 cord_x_and_y = cord_x_and_y[sort]
@@ -52,7 +52,7 @@ def interval(x, x1):
     n = np.size(x)
     n1 = np.size(x1)
     itr = np.zeros(n1,dtype=int)
-    for i in range(0, n1 - 1):
+    for i in range(0, n1):
         if (x1[i] < x[0]):
             itr[i] = -1
             continue
@@ -65,7 +65,7 @@ def interval(x, x1):
                 break
             else:
                 j += 1
-    itr[-1] = itr[-2]
+    # itr[-1] = itr[-2]
     return itr
 
 def spline_val(x,y,x1,itr,M):
@@ -78,7 +78,7 @@ def spline_val(x,y,x1,itr,M):
     while(i<=n1-1):
         j = itr[i]
         if (j==-1):
-            y1[i] = y[0]+((x[0]-x[1])*M[1]/6+(y[1]-y[0])/(x[1]-x[0]))*(x1[i]-x[0])
+            y1[i] = y[0]+((x[0]-x[1])*M[4]/6+(y[1]-y[0])/(x[1]-x[0]))*(x1[i]-x[0])
             i+=1
             # continue
         if (j>-1 and j<=n):
@@ -86,7 +86,7 @@ def spline_val(x,y,x1,itr,M):
             i+=1
             # continue
         if (j>=n):
-            y1[i] = y[n]+((x[n]-x[n])*M[n]/6+(y[n]-y[n])/(x[n]-x[n]))*(x1[i]-x[n])
+            y1[i] = y[-1]+((x[-1]-x[-2])*M[n]/6+(y[-1]-y[-2])/(x[-1]-x[-2]))*(x1[i]-x[-1])
             i+=1
             # continue
     return y1
