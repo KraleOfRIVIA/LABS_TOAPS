@@ -9,8 +9,8 @@ def runge_kutta(x0 ,x_end,x, h,):
     y[0] = 1
 
     for k in range(n):
-        k1 = f(x, y[k])
-        k2 = f(x + 0.5 * h, y[k] + 0.5 * h * k1)
+        k1 = y[k]-2*np.sin(x[k])-np.cos(x[k])*(1-2*np.sin(x[k]))
+        k2 = f(x + 0.5 * h, y[k] + 0.5 * h * k1) //
         k3 = f(x + 0.5 * h, y[k] + 0.5 * h * k2)
         k4 = f(x + h, y[k] + h * k3)
         y[k + 1] = y[k] + (1 / 6) * h * (k1 + 2 * k2 + 2 * k3 + k4)

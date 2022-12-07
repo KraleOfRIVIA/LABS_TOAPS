@@ -57,7 +57,6 @@ def interval(x, x1):
                 break
             else:
                 j += 1
-    # itr[-1] = itr[-2]
     return itr
 
 
