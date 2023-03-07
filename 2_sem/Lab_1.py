@@ -1,14 +1,14 @@
+import scipy as sci
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import signal
+import pandas as pan
 f = 8 # частота сигнала
 fd = 1024 #частота дискретизации
 ph = 0 # начальная фаза
 k = fd/f # шаг
 A = 1 # амплитуда
 t = np.arange(0,k)
-# y = A * np.sin(2*np.pi*t/k+ph)        # синусойда
-y = signal.square(2*np.pi*t/k+ph)        #для прямоугольного импульса
+y = A * np.sin(2*np.pi*t/k+ph) # t = np.linspace(-n, n-1, 2*n) ,
 fig, ax = plt.subplots()
 fig1, ax1 = plt.subplots()
 ax.plot(t/fd,y)
@@ -33,11 +33,4 @@ ax4.plot(t/fd,z)
 ax4.set_xlabel('t , c')
 ax4.set_ylabel('A')
 ax4.grid()
-
-
-
-
-
-
-
 plt.show()
