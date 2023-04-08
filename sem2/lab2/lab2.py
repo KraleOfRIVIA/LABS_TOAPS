@@ -7,44 +7,47 @@ f = 8 # частота сигнала
 A = 1 # амплитуда
 N = int(fs/f) # число точек в сигнале
 t = np.arange(N) # временной интервал
-y = A * np.sign(np.sin(2 * np.pi * t * f / fs)) # импульс скважности 2
+y = A * signal.square(2 * np.pi * f * t / fs,0.25) # импульс скважности 2
+plt.figure(1)
 
-fig, axs = plt.subplots(3, 2)
-axs[0, 0].plot(t/fs, y)
-axs[0, 0].set_xlabel('t, с')
-axs[0, 0].set_ylabel('А')
-axs[0, 0].grid(True)
-AS = np.abs(np.fft.fft(y))
-axs[0, 1].plot(np.fft.fftfreq(N, 1/fs), AS)
-axs[0, 1].set_xlabel('w, Гц')
-axs[0, 1].set_ylabel('Амплитуда')
-axs[0, 1].grid(True)
-CS1 = np.fft.fft(y)
+plt.subplot(3, 2, 1) # график размещаем
+plt.plot(t/fs, y) # наш исходный график (частотный)
+plt.xlabel('t, с')
+plt.ylabel('А')
+plt.grid(True)
+
+CS = np.fft.fft(y) # ЧАСТОТНЫЙ СПЕКТР СИГНАЛА
+AS = np.abs(CS) # АМПЛИТУДНЫЙ СПЕКТР СИГНАЛА
+
+plt.subplot(3, 2, 2)
+plt.plot(np.arange(N)/N * fs, AS)
+plt.ylabel('Амплитуда')
+plt.xlabel('w, Гц')
+plt.grid(True)
+
+# создаем второй частотный спектр
+CS1 = CS.copy()
+k = 0
 gr = 8
-CS1[int(N/2-gr):int(N/2+gr)+1] = 0
+while k < (N//2-gr):
+CS1[N//2-k] = 0
+CS1[(N//2+1)+k] = 0
+k += 1
+
 y1 = np.fft.ifft(CS1)
-axs[1, 0].plot(t/fs, y1)
-axs[1, 0].set_xlabel('t, с')
-axs[1, 0].set_ylabel('А')
-axs[1, 0].grid(True)
+
+plt.subplot(3, 2, 3)
+plt.plot(t/fs, y1) # ВТОРОЙ ГРАФИК ЧАСТОТНЫЙ
+plt.xlabel('t, с')
+plt.ylabel('А')
+plt.grid(True)
+
 AS1 = np.abs(CS1)
-axs[1, 1].plot(np.fft.fftfreq(N, 1/fs), AS1)
-axs[1, 1].set_xlabel('w, Гц')
-axs[1, 1].set_ylabel('Амплитуда')
-axs[1, 1].grid(True)
-FC = np.fft.fftshift(np.fft.fft(y))
-ABS = np.abs(FC)
-axs[2, 0].plot(np.fft.fftshift(np.fft.fftfreq(N, 1/fs)) * f, ABS)
-axs[2, 0].set_xlabel('f, Гц')
-axs[2, 0].set_ylabel('Амплитуда')
-axs[2, 0].grid(True)
-FC1 = np.fft.fftshift(CS1)
-ABS1 = np.abs(FC1)
-axs[2, 1].plot(np.fft.fftshift(np.fft.fftfreq(N, 1/fs)) * f, ABS1)
-axs[2, 1].set_xlabel('f, Гц')
-axs[2, 1].set_ylabel('Амплитуда')
-axs[2, 1].grid(True)
 
-plt.tight_layout()
+plt.subplot(3, 2, 4)
+plt.plot(np.arange(N)/N * fs, AS1)
+plt.ylabel('Амплитуда')
+plt.xlabel('w, Гц')
+plt.grid(True)
+
 plt.show()
-
