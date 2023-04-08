@@ -6,9 +6,9 @@ fd = 1024 #частота дискретизации
 ph = 0 # начальная фаза
 k = fd/f # шаг
 A = 1 # амплитуда
-t = np.arange(0,k)
-# y = A * np.sin(2*np.pi*t/k+ph)        # синусойда
-y = signal.square(2*np.pi*t/k+ph)        #для прямоугольного импульса
+t = np.arange(0,k*2)
+y = A * np.sin(2*np.pi*t/k+ph)        # синусойда
+# y = signal.square(2*np.pi*t/k+ph)        #для прямоугольного импульса
 fig, ax = plt.subplots()
 fig1, ax1 = plt.subplots()
 ax.plot(t/fd,y)
@@ -23,7 +23,7 @@ ax1.set_ylabel('w,Гц')
 ax1.plot(t*f,FS)
 ax1.grid()
 fig3, ax3 = plt.subplots()
-ax3.stem(t*f,AS)
+ax3.stem((t*f)/2,AS)
 ax3.set_xlabel('Амплитуда')
 ax3.set_ylabel('w , Гц')
 ax3.grid()
@@ -33,11 +33,4 @@ ax4.plot(t/fd,z)
 ax4.set_xlabel('t , c')
 ax4.set_ylabel('A')
 ax4.grid()
-
-
-
-
-
-
-
 plt.show()
