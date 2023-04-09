@@ -1,28 +1,27 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
-T = 1 # Период
-duty_cycles = np.linspace(0.01, 0.9, 100) # Различные значения скважности
+fd = 1024
+f = 8
+ph = 0
+A = 1
+N = int(fd / f)
+t = np.arange(N)
 
-# Вычисляем спектр для каждой скважности
-spectra = []
-for duty_cycle in duty_cycles:
-    t = np.linspace(0, T, 1000)
-    x = np.zeros_like(t)
-    x[t < duty_cycle*T] = 1
-    X = np.fft.fft(x)
-    freqs = np.fft.fftfreq(len(x), t[1] - t[0])
-    spectra.append(np.abs(X))
+y1 = (A * signal.square(2 * np.pi * t / N+ph, 0.5) + 1) / 2 # меандр (2)
+y2 = (A * signal.square(2 * np.pi * t / N+ph, 0.1) + 1) / 2 # меандр (4)
 
-# Определяем минимальную практическую ширину спектра
-spectra = np.array(spectra)
-spectra_sum = spectra.sum(axis=1)
-min_idx = np.argmin(spectra_sum)
-min_duty_cycle = duty_cycles[min_idx]
+E1_t = np.linalg.norm(y1) ** 2
+E1_f = np.linalg.norm(np.abs(np.fft.fft(y1)) ** 2 / len(y1))
 
-# Выводим график спектра и минимальную скважность
-plt.plot(freqs, spectra[min_idx])
-plt.xlabel('Frequency')
-plt.ylabel('Amplitude')
-plt.title(f'Minimum spectral width at duty cycle {min_duty_cycle:.2f}')
+E2_t = np.linalg.norm(y2) ** 2
+E2_f = np.linalg.norm(np.abs(np.fft.fft(y2)) ** 2 / len(y2))
+
+plt.plot(t, np.abs(np.fft.fft(y1)), 'r', t, np.abs(np.fft.fft(y2)), 'b')
+plt.legend(['Меандр, скваж. 2', 'Меандр, скваж. 10'])
 plt.show()
+
+print(f"Et исходного сигнала = {E1_t:.0f}")
+print(f"Ew исходного сигнала = {E1_f:.0f}")
+print(f"Et сигнала после уменьшения ширины = {E2_t:.0f}")
+print(f"Ew сигнала после уменьшения ширины = {E2_f:.0f}")

@@ -30,9 +30,9 @@ CS1 = CS.copy()
 k = 0
 gr = 8
 while k < (N//2-gr):
-CS1[N//2-k] = 0
-CS1[(N//2+1)+k] = 0
-k += 1
+    CS1[N//2-k] = 0
+    CS1[(N//2+1)+k] = 0
+    k += 1
 
 y1 = np.fft.ifft(CS1)
 
