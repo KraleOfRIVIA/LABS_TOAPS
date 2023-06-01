@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy import signal
 #--------------- параметры передаваемого сигнала -------------------------
 fsig = 1e+3
-N = 100
+N = 300000
 fs = fsig*N
 f = np.linspace(0, fsig, N)
 

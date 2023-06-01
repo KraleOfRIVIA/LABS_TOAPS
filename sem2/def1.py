@@ -331,7 +331,7 @@ err = np.sum(np.abs(bit - bit2))
 print('Число ошибок:')
 print(err)
 for i in range(len(SNR_values)):
-    S3 = awgn(S2, SNR_values[i], 'measured')  # Добавляем шум с текущим SNR
+    S3 = awgn(S2, SNR_values[i])  # Добавляем шум с текущим SNR
 
     bit2 = np.zeros(M)
 

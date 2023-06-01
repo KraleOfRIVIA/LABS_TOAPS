@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 fsig = 1*np.e+3  # Частота прямоугольного сигнала в Гц
-N = 100  # Количество отсчетов
+N = 3000  # Количество отсчетов
 fs = fsig * N  # Частота дискретизации
 
 t = np.arange(0, N) / fs  # Временная шкала
