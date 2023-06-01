@@ -1,6 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+def awgn1(S, SNR):
+    n = len(S)               # число отсчетов в сигнале
+    Es = np.sum(S**2) / n    # среднеквадратичное значение сигнала
+    # SNR = 20 * log10(Es / En)
+    En = Es * 10 ** (-SNR / 20)   # среднеквадратичное значение шума
+    WGN = np.random.randn(n) * En
+    S1 = S + WGN
+    return S1
 M = 8  # число передаваемых бит
 fsig = 1e+2  # частота повторения передаваемой последовательности
 N = 1024  # число отсчетов временных и частотных характеристик
@@ -99,7 +106,7 @@ plt.xlabel('t, с')
 plt.ylabel('S(t)')
 
 SNR = 2  # соотношение энергий сигнала и шума, в разах
-S3 = S2 + np.random.normal(0, np.sqrt(np.var(S2) / SNR), N)  # добавление белого гауссовского шума
+S3 = awgn1(S2,20*np.log(SNR))  # добавление белого гауссовского шума
 plt.figure(7)
 plt.plot(t, S3, '-b')
 plt.axis([0, t[-1], -1.5, 1.5])
@@ -175,4 +182,66 @@ print(bit2)
 err = np.sum(np.abs(bit - bit2))
 print('Число ошибок:')
 print(err)
+thresholds = np.arange(0, 1.01, 0.01)  # Разные пороговые уровни для исследования
+errors1 = np.zeros(len(thresholds))
+errors2 = np.zeros(len(thresholds))
+total_errors = np.zeros(len(thresholds))
+sync = np.array(sync)
+sync = sync.astype(int)
+for t in range(len(thresholds)):
+    thresh = thresholds[t]
+    bit2 = np.zeros(M)
+    for i in range(M):
+        if S6[sync[i]] > thresh:
+            bit2[i] = 1
+        else:
+            bit2[i] = 0
+    errors1[t] = np.sum((bit == 0) & (bit2 == 1)) / M  # Ошибка первого рода
+    errors2[t] = np.sum((bit == 1) & (bit2 == 0)) / M  # Ошибка второго рода
+    total_errors[t] = np.sum(bit != bit2) / M  # Общая ошибка
+
+plt.plot(thresholds, errors1, 'r', thresholds, errors2, 'g', thresholds, total_errors, 'b')
+plt.legend(['Ошибка первого рода', 'Ошибка второго рода', 'Общая ошибка'])
+plt.xlabel('Порог')
+plt.ylabel('Вероятность ошибки')
+
+idx_opt = np.argmin(total_errors)
+optimal_threshold = thresholds[idx_opt]
+print('Оптимальный порог:')
+print(optimal_threshold)
+print('Переданный сигнал:')
+print(bit)
+print('Принятый сигнал:')
+print(bit2)
+err = np.sum(np.abs(bit - bit2))
+print('Число ошибок:')
+print(err)
+average_threshold = np.mean(S6)
+print('Средний порог:')
+print(average_threshold)
+
+deviation = np.abs(optimal_threshold - average_threshold)
+print('Среднее отклонение от оптимального порога:')
+print(deviation)
+SNR_values = np.arange(-10, 21, 1) # диапазон значений SNR от -10 до 20 с шагом 1
+error_probabilities = np.zeros(len(SNR_values))
+
+for i in range(len(SNR_values)):
+    S3 = awgn1(S2, SNR_values[i]) # Добавляем шум с текущим SNR
+# [дальнейшая обработка сигнала]
+    average_threshold = np.mean(S6)
+    bit2 = np.zeros(M)
+    for j in range(M):
+        if S6[sync[j]] > average_threshold:
+            bit2[j] = 1
+        else:
+            bit2[j] = 0
+        err = np.sum(np.abs(bit - bit2))
+        error_probabilities[i] = err / M # Считаем вероятность ошибки
+
+plt.figure()
+plt.plot(SNR_values, error_probabilities)
+plt.title('Зависимость вероятности ошибки от уровня шума')
+plt.xlabel('SNR, dB')
+plt.ylabel('Вероятность ошибки')
 plt.show()
